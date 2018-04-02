@@ -1,0 +1,15 @@
+{
+    "title": "River Discharge: Part I",
+    "author": "Andrew J. Moodie",
+    "shortdesc": "What is river discharge? How do we measure it? Who cares?",
+    "version": "0.1",
+    "projurl": "https://github.com/amoodie/what_is_discharge",
+    "projreadme": ["README.md"],
+    "difficulty": 1,
+    "preview": ["private", "demo.png"],
+    "exec": ["src", "what_is_discharge.py"],
+    "docloc": ["docs"],
+    "doclist": {
+    	"nah.md": "nah"
+    }
+}
