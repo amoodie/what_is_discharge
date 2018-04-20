@@ -1,6 +1,7 @@
-# The Stratigraphic Filter
+# What is discharge?
+## River discharge course part I
 
-This explores the erosional stratigraphic filter on stratigraphy with a simple one-dimensional model of surface elevation over time.
+This explores the 
 
 This repository is also linked into the [SedEdu suite of education modules](https://github.com/amoodie/sededu), and can be accessed there as well.
 
@@ -10,7 +11,7 @@ This repository is also linked into the [SedEdu suite of education modules](http
 
 ## Installation and running the module
 
-Visit the section of the text below for more information on installing and executing the `stratigraphic_filter_toy` program on your computer. 
+Visit the section of the text below for more information on installing and executing the `name` program on your computer. 
 
 
 ### Requirements

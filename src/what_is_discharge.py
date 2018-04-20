@@ -20,7 +20,7 @@ S0 = 1e-4 # channel slope
 Cf = 0.005
 g = 9.81
 
-Qwinit = 10
+Qwinit = 100
 Qw = Qwinit
 Qwbf = 350
 Qwmax = 600
@@ -71,8 +71,8 @@ plt.subplots_adjust(left=0.075, bottom=0.5, top=0.95, right=0.95)
 background_color = 'white'
 ax.set_xlabel("cross-channel coordinate")
 ax.set_ylabel("elevation (m)")
-plt.ylim(-20, 20)
-plt.xlim(-(B/2)*1.1, B/2*1/1)
+plt.ylim(np.floor(-Hnmax), 1)
+plt.xlim(-(B/2)*1.1, B/2*2)
 # ax.xaxis.set_major_formatter( plt.FuncFormatter(lambda v, x: int(-1*(v - (L/1000*mou)))) )
 
 # add plot elements

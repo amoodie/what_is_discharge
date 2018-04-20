@@ -17,10 +17,12 @@ def make_xcoords(B):
     x = np.hstack((np.array([-B*1/3]),
                    np.linspace(-B*1/3, B*2/3),
                    np.array([B*2/3])))
+    print(x)
     return x
 
 def make_ycoords(x, Hn, Hnmax):
-    y = np.hstack((0 - np.array([Hn]),
+    y = np.hstack((0 - Hnmax + np.array([Hn]),
                    np.zeros(len(x)-2)-Hnmax,
-                   0 - np.array([Hn])))
+                   0 - Hnmax + np.array([Hn])))
+    print(y)
     return y
