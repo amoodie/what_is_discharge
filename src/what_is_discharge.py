@@ -36,16 +36,10 @@ y = channel_geom.make_ycoords(x, Hninit, Hnmax)
 # DEFINE FUNCTIONS
 def update(val):
     Q = slide_Qw.val
-    # B = B
-    # Cf = Cf
-    # S0 = S0
-    # g = 9.81
     Hn = channel_geom.get_Hn(Q, B, Cf, S0, g)
     y = channel_geom.make_ycoords(x, Hn, Hnmax)
 
     water_shade.set_xy(np.column_stack((x, y)))
-
-
 
     fig.canvas.draw_idle()
 
@@ -116,8 +110,9 @@ ax_Qw = plt.axes([0.075, 0.35, 0.525, 0.05], facecolor=widget_color)
 slide_Qw = utils.MinMaxSlider(ax_Qw, 'water discharge (m$^3$/s)', Qwmin, Qwmax, 
     valinit=Qwinit, valstep=5, transform=ax.transAxes)
 
-# slide_Qw.set_val(1000)
-slide_Qw.set_slidermax(1000)
+
+# 
+
 
 # add gui table
 # ax_overTable = plt.axes([0.20, 0.1, 0.5, 0.1], frameon=False, xticks=[], yticks=[])
@@ -143,9 +138,8 @@ slide_Qw.set_slidermax(1000)
 
 # add gui buttons
 chk_data_ax = plt.axes([0.75, 0.25, 0.15, 0.15], facecolor=background_color)
-chk_data_dict = {'show water lines':'wl', 'show thalweg':'tw'}
-chk_data = widget.CheckButtons(chk_data_ax, chk_data_dict,
-                                            (False, False))
+chk_data_dict = {'overbank flow':'ob'}
+chk_data = widget.CheckButtons(chk_data_ax, chk_data_dict, [False])
 
 btn_reset_ax = plt.axes([0.75, 0.1, 0.1, 0.04])
 btn_reset = widget.Button(btn_reset_ax, 'Reset', color=widget_color, hovercolor='0.975')
@@ -158,10 +152,16 @@ def reset(event):
         chk_data.set_active(cb)
     fig.canvas.draw_idle()
 
+def slider_update(label):
+    chk_val = chk_data_dict[label]
+    if chk_val == 'ob':
+        slide_Qw.set_slidermax(Qwmax*2)
+    else:
+        slide_Qw.set_slidermax(Qwmax)
 
 # connect widgets
 slide_Qw.on_changed(update)
-# chk_data.on_clicked(draw_nitt)
+chk_data.on_clicked(slider_update)
 # btn_reset.on_clicked(reset)
 
 
