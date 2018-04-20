@@ -218,4 +218,9 @@ class MinMaxSlider(AxesWidget):
         if (self.val != self.valinit):
             self.set_val(self.valinit)
 
+    def set_slidermax(self, val):
+        # self.slidermax = val
+        self.maxtext.set_text(self.valfmt % val)
+        self.valmax = val
+        self.ax.set_xlim((self.valmin, self.valmax))
             

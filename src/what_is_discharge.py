@@ -116,6 +116,8 @@ ax_Qw = plt.axes([0.075, 0.35, 0.525, 0.05], facecolor=widget_color)
 slide_Qw = utils.MinMaxSlider(ax_Qw, 'water discharge (m$^3$/s)', Qwmin, Qwmax, 
     valinit=Qwinit, valstep=5, transform=ax.transAxes)
 
+# slide_Qw.set_val(1000)
+slide_Qw.set_slidermax(1000)
 
 # add gui table
 # ax_overTable = plt.axes([0.20, 0.1, 0.5, 0.1], frameon=False, xticks=[], yticks=[])
