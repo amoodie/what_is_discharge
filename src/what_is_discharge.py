@@ -155,9 +155,11 @@ def reset(event):
 def slider_update(label):
     chk_val = chk_data_dict[label]
     if chk_val == 'ob':
-        slide_Qw.set_slidermax(Qwmax*2)
-    else:
-        slide_Qw.set_slidermax(Qwmax)
+        if slide_Qw.valmax == Qwmax:
+            slide_Qw.set_slidermax(Qwmax*2)
+        else:
+            slide_Qw.set_slidermax(Qwmax)
+    fig.canvas.draw_idle()
 
 # connect widgets
 slide_Qw.on_changed(update)
