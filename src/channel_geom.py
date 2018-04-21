@@ -27,6 +27,10 @@ def make_ycoords(x, Hn, Hnmax):
 
 def channel_bed(x, xmin, xmax):
     cbed = 0.85 * np.sin(-0.5 - 0.01*(x + np.sin(x))) - 0.852
-    bed_poly = cbed
-
+    bed_poly = np.vstack((np.array([xmin*2, -10]),
+                          np.array([xmin*2, 0]),
+                          np.column_stack((x, cbed)),
+                          np.array([xmax*2, 0]),
+                          np.array([xmax*2, -10])))    
+    print(np.shape(bed_poly))
     return bed_poly

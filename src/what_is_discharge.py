@@ -33,7 +33,9 @@ Hnmax = channel_geom.get_Hn(Qwmax, B, Cf, S0, g)
 
 x = channel_geom.make_xcoords(B)
 y = channel_geom.make_ycoords(x, Hninit, Hnmax)
-cbed = channel_geom.channel_bed(x, xmin, xmax)
+bed_patch = channel_geom.channel_bed(x, xmin, xmax)
+
+ymin = np.floor(-Hnmax)
 
 
 # DEFINE FUNCTIONS
@@ -68,7 +70,7 @@ plt.subplots_adjust(left=0.075, bottom=0.5, top=0.95, right=0.95)
 background_color = 'white'
 ax.set_xlabel("cross-channel coordinate")
 ax.set_ylabel("elevation (m)")
-plt.ylim(np.floor(-Hnmax), 1.5)
+plt.ylim(ymin, 1.5)
 plt.xlim(xmin, xmax)
 # ax.xaxis.set_major_formatter( plt.FuncFormatter(lambda v, x: int(-1*(v - (L/1000*mou)))) )
 
@@ -83,8 +85,8 @@ plt.xlim(xmin, xmax)
 
 zero_line = plt.plot([xmin, xmax], [0, 0], 'k--', lw=1.2) # plot zero
 water_shade = ax.add_patch(ptch.Polygon(np.column_stack((x, y)), facecolor='powderblue'))
-bed_line = ax.plot(x, cbed, lw=1.5)
-# bed_line = ax.add_patch(ptch.Polygon(x, bed_patch, lw=1.5)
+# bed_line = ax.plot(x, cbed, lw=1.5)
+bed_line = ax.add_patch(ptch.Polygon(bed_patch, lw=1.5, facecolor='sienna'))
 
 
 # RK_labels = [plt.text(x, y, '< '+s, backgroundcolor='white') 
