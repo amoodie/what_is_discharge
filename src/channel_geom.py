@@ -24,3 +24,9 @@ def make_ycoords(x, Hn, Hnmax):
                    np.zeros(len(x)-2)-Hnmax,
                    0 - Hnmax + np.array([Hn])))
     return y
+
+def channel_bed(x, xmin, xmax):
+    cbed = 0.85 * np.sin(-0.5 - 0.01*(x + np.sin(x))) - 0.852
+    bed_poly = cbed
+
+    return bed_poly

@@ -19,6 +19,8 @@ B = 600 # channel width
 S0 = 1e-4 # channel slope
 Cf = 0.005
 g = 9.81
+xmin = -(B/2)*1.1
+xmax = B/2*2
 
 Qwinit = 100
 Qw = Qwinit
@@ -31,6 +33,7 @@ Hnmax = channel_geom.get_Hn(Qwmax, B, Cf, S0, g)
 
 x = channel_geom.make_xcoords(B)
 y = channel_geom.make_ycoords(x, Hninit, Hnmax)
+cbed = channel_geom.channel_bed(x, xmin, xmax)
 
 
 # DEFINE FUNCTIONS
@@ -65,8 +68,8 @@ plt.subplots_adjust(left=0.075, bottom=0.5, top=0.95, right=0.95)
 background_color = 'white'
 ax.set_xlabel("cross-channel coordinate")
 ax.set_ylabel("elevation (m)")
-plt.ylim(np.floor(-Hnmax), 1)
-plt.xlim(-(B/2)*1.1, B/2*2)
+plt.ylim(np.floor(-Hnmax), 1.5)
+plt.xlim(xmin, xmax)
 # ax.xaxis.set_major_formatter( plt.FuncFormatter(lambda v, x: int(-1*(v - (L/1000*mou)))) )
 
 # add plot elements
@@ -77,9 +80,13 @@ plt.xlim(-(B/2)*1.1, B/2*2)
 # eta_shade = ax.add_patch(ptch.Polygon(utils.format_polyvects(
 #                          x/1000, x/1000, -50*np.ones(np.size(eta)), eta),
 #                          facecolor='saddlebrown'))
-# zed_line = plt.plot(x[:mouIdx]/1000, eta[:mouIdx]+zed[:mouIdx], 'k--', lw=1.2) # plot levee
-# water_line, = plt.plot(x/1000, eta+H, lw=2, color='steelblue') # plot initial condition
+
+zero_line = plt.plot([xmin, xmax], [0, 0], 'k--', lw=1.2) # plot zero
 water_shade = ax.add_patch(ptch.Polygon(np.column_stack((x, y)), facecolor='powderblue'))
+bed_line = ax.plot(x, cbed, lw=1.5)
+# bed_line = ax.add_patch(ptch.Polygon(x, bed_patch, lw=1.5)
+
+
 # RK_labels = [plt.text(x, y, '< '+s, backgroundcolor='white') 
 #                                for x, y, s in zip(L/1000*mou - RKs + 6, 
 #                                [6, 20, 70, 80, 90], # 85-np.arange(0,np.size(RKs))*5 
