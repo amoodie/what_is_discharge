@@ -12,24 +12,26 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.widgets as widget
 import matplotlib.patches as ptch
-import utils, channel_geom
+import utils
+from river import River
 
 # SET PARAMETERS
-B = 600 # channel width
+Bc = 600 # channel width
+Bf = Bc*3 # floodplain width
 S0 = 1e-4 # channel slope
-Cf = 0.005
+Cfc = 0.005 # channel friction coefficient
+Cff = 0.01 # floodplain friction coefficient
 g = 9.81
-xmin = -(B/2)*1.1
-xmax = B/2*2
 
-Qwinit = 100
-Qw = Qwinit
-Qwbf = 350
-Qwmax = 600
-Qwmin = 50
+xmin = -Bf
+xmax = Bf
 
-Hninit = channel_geom.get_Hn(Qwinit, B, Cf, S0, g)
-Hnmax = channel_geom.get_Hn(Qwmax, B, Cf, S0, g)
+Q = Qinit = 100
+Qbf = 600
+Qmin = 50
+
+Hninit = channel_geom.get_flowdepth(Qinit, Bc, Cfc, Cff, S0, g, Qbf)
+Hnmax = channel_geom.get_flowdepth(Qbf, B, Cfc, Cff, S0, g, Qbf)
 
 x = channel_geom.make_xcoords(B)
 y = channel_geom.make_ycoords(x, Hninit, Hnmax)
@@ -40,8 +42,8 @@ ymin = np.floor(-Hnmax)
 
 # DEFINE FUNCTIONS
 def update(val):
-    Q = slide_Qw.val
-    Hn = channel_geom.get_Hn(Q, B, Cf, S0, g)
+    Q = slide_Q.val
+    Hn = channel_geom.get_flowdepth(Q, B, Cfc, Cff, S0, g, Qbf)
     y = channel_geom.make_ycoords(x, Hn, Hnmax)
 
     water_shade.set_xy(np.column_stack((x, y)))
@@ -49,10 +51,10 @@ def update(val):
     fig.canvas.draw_idle()
 
 
-# H = hydro.get_backwater_dBdx(eta, S, B, H0, Cf, Qw, nx, dx)
+# H = hydro.get_backwater_dBdx(eta, S, B, H0, Cf, Q, nx, dx)
 # Xs = hydro.find_backwaterregion(H, dx)
-# # zed = 0.5 + -1e-5*(x - (L*mou)) + hydro.get_backwater_dBdx(eta, S, B, H0, Cf, Qwbf, nx, dx)
-# zed = 0.5 + hydro.get_backwater_dBdx(eta, S, B, H0, Cf, Qwbf, nx, dx)
+# # zed = 0.5 + -1e-5*(x - (L*mou)) + hydro.get_backwater_dBdx(eta, S, B, H0, Cf, Qbf, nx, dx)
+# zed = 0.5 + hydro.get_backwater_dBdx(eta, S, B, H0, Cf, Qbf, nx, dx)
 
 # nitt_bed, nitt_water = channel.load_nitt()
 # nitt_water_dict = [{'10,000 m$^3$/s':nitt_water.hdr.index('f5k_10k')},
@@ -103,7 +105,7 @@ bed_line = ax.add_patch(ptch.Polygon(bed_patch, lw=1.5, facecolor='sienna'))
 # nitt_water_legend.set_visible(False)
 # nitt_bed_line, = plt.plot(L/1000*mou - nitt_bed.data[:,0], nitt_bed.data[:,1],
 #                          '.', color='grey', visible=False)
-# Qw_val = plt.text(0.05, 0.85, "Qw = " + utils.format_number(Qw),
+# Q_val = plt.text(0.05, 0.85, "Q = " + utils.format_number(Q),
 #                   fontsize=16, transform=ax.transAxes, 
 #                   backgroundcolor='white')
 # Bw_val = plt.text(( (Xs[1]-Xs[0])/2 + Xs[0])/1000, 45, 
@@ -115,9 +117,9 @@ bed_line = ax.add_patch(ptch.Polygon(bed_patch, lw=1.5, facecolor='sienna'))
 
 # add slider
 widget_color = 'lightgoldenrodyellow'
-ax_Qw = plt.axes([0.075, 0.35, 0.525, 0.05], facecolor=widget_color)
-slide_Qw = utils.MinMaxSlider(ax_Qw, 'water discharge (m$^3$/s)', Qwmin, Qwmax, 
-    valinit=Qwinit, valstep=5, transform=ax.transAxes)
+ax_Q = plt.axes([0.075, 0.35, 0.525, 0.05], facecolor=widget_color)
+slide_Q = utils.MinMaxSlider(ax_Q, 'water discharge (m$^3$/s)', Qmin, Qbf, 
+    valinit=Qinit, valstep=5, transform=ax.transAxes)
 
 
 # 
@@ -155,7 +157,7 @@ btn_reset = widget.Button(btn_reset_ax, 'Reset', color=widget_color, hovercolor=
 
 
 def reset(event):
-    slide_Qw.reset()
+    slide_Q.reset()
     chk_data_status = chk_data.get_status()
     for cb in [i for i, x in enumerate(chk_data_status) if x]:
         chk_data.set_active(cb)
@@ -164,14 +166,14 @@ def reset(event):
 def slider_update(label):
     chk_val = chk_data_dict[label]
     if chk_val == 'ob':
-        if slide_Qw.valmax == Qwmax:
-            slide_Qw.set_slidermax(Qwmax*2)
+        if slide_Q.valmax == Qbf:
+            slide_Q.set_slidermax(Qbf*2)
         else:
-            slide_Qw.set_slidermax(Qwmax)
+            slide_Q.set_slidermax(Qbf)
     fig.canvas.draw_idle()
 
 # connect widgets
-slide_Qw.on_changed(update)
+slide_Q.on_changed(update)
 chk_data.on_clicked(slider_update)
 # btn_reset.on_clicked(reset)
 
