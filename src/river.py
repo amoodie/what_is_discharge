@@ -1,4 +1,4 @@
-
+import numpy as np
 
 class River(object):
     def __init__(self, Bc, Bf, S0, Cfc, Cff, Qbf):
@@ -27,10 +27,21 @@ class River(object):
 
 class Channel(object):
     def __init__(self, B, S0, Cf, Qbf, parent=None):
-       self.B = B
-       self.S0 = S0
-       self.Cf = Cf
-       self.Qbf = Qbf
+        self.B = B
+        self.S0 = S0
+        self.Cf = Cf
+        self.Qbf = Qbf
+
+        self.bed = self.make_bed(self.B)
+
+
+    def make_bed(self, B):
+        x = np.hstack((np.array([-B*1/3]),
+                       np.linspace(-B*1/3, B*2/3),
+                       np.array([B*2/3])))
+        return x
+
+
 
 
 class Floodplain(object):
