@@ -14,6 +14,7 @@ import matplotlib.widgets as widget
 import matplotlib.patches as ptch
 import utils
 from river import River
+import channel_geom
 
 # SET PARAMETERS
 Bc = 600 # channel width
