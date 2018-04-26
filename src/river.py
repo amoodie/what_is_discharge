@@ -1,16 +1,25 @@
 
 
 class River(object):
-    def __init__(self, Bc, Bf):
-        a=1
+    def __init__(self, Bc, Bf, S0, Cfc, Cff, Qbf):
+
+        self.channel = self.Channel(Bc, S0, Cfc, Qbf, parent=self)
 
 
     class Channel(object):
-        def __init__(self, parent, width, depth):
+        def __init__(self, B, S0, Cf, Qbf, parent=None):
            a=1
 
 
-   def get_flowdepth(Q, B, Cfc, Cff, S0, g, Qbf):
+    class Floodplain(object):
+        def __init__(self, parent):
+            a=1
+
+    class Flow(object):
+        def __init__(self, parent):
+            a=1
+
+    def get_flowdepth(Q, B, Cfc, Cff, S0, g, Qbf):
         if Q > Qbf:
             Qob = Q - Qbf
             Hob = get_Hn(Qob, B, Cff, S0, g)

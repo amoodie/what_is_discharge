@@ -22,23 +22,28 @@ Bf = Bc*3 # floodplain width
 S0 = 1e-4 # channel slope
 Cfc = 0.005 # channel friction coefficient
 Cff = 0.01 # floodplain friction coefficient
+Qbf = 600
+
+
+
 g = 9.81
 
 xmin = -Bf
 xmax = Bf
 
-Q = Qinit = 100
-Qbf = 600
-Qmin = 50
+Q = Qinit = Qbf/6
+Qmin = Qbf/10
 
-Hninit = channel_geom.get_flowdepth(Qinit, Bc, Cfc, Cff, S0, g, Qbf)
-Hnmax = channel_geom.get_flowdepth(Qbf, B, Cfc, Cff, S0, g, Qbf)
+river = River(Bc=Bc, Bf=Bf, S0=S0, Cfc=Cfc, Cff=Cff, Qbf=Qbf)
 
-x = channel_geom.make_xcoords(B)
-y = channel_geom.make_ycoords(x, Hninit, Hnmax)
-bed_patch = channel_geom.channel_bed(x, xmin, xmax)
+# Hninit = channel_geom.get_flowdepth(Qinit, Bc, Cfc, Cff, S0, g, Qbf)
+# Hnmax = channel_geom.get_flowdepth(Qbf, B, Cfc, Cff, S0, g, Qbf)
 
-ymin = np.floor(-Hnmax)
+# x = channel_geom.make_xcoords(B)
+# y = channel_geom.make_ycoords(x, Hninit, Hnmax)
+# bed_patch = channel_geom.channel_bed(x, xmin, xmax)
+
+# ymin = np.floor(-Hnmax)
 
 
 # DEFINE FUNCTIONS
@@ -73,7 +78,7 @@ plt.subplots_adjust(left=0.075, bottom=0.5, top=0.95, right=0.95)
 background_color = 'white'
 ax.set_xlabel("cross-channel coordinate")
 ax.set_ylabel("elevation (m)")
-plt.ylim(ymin, 1.5)
+# plt.ylim(ymin, 1.5)
 plt.xlim(xmin, xmax)
 # ax.xaxis.set_major_formatter( plt.FuncFormatter(lambda v, x: int(-1*(v - (L/1000*mou)))) )
 
@@ -87,9 +92,8 @@ plt.xlim(xmin, xmax)
 #                          facecolor='saddlebrown'))
 
 zero_line = plt.plot([xmin, xmax], [0, 0], 'k--', lw=1.2) # plot zero
-water_shade = ax.add_patch(ptch.Polygon(np.column_stack((x, y)), facecolor='powderblue'))
-# bed_line = ax.plot(x, cbed, lw=1.5)
-bed_line = ax.add_patch(ptch.Polygon(bed_patch, lw=1.5, facecolor='sienna'))
+# water_shade = ax.add_patch(ptch.Polygon(np.column_stack((x, y)), facecolor='powderblue'))
+# bed_line = ax.add_patch(ptch.Polygon(bed_patch, lw=1.5, facecolor='sienna'))
 
 
 # RK_labels = [plt.text(x, y, '< '+s, backgroundcolor='white') 
@@ -117,10 +121,10 @@ bed_line = ax.add_patch(ptch.Polygon(bed_patch, lw=1.5, facecolor='sienna'))
 
 
 # add slider
-widget_color = 'lightgoldenrodyellow'
-ax_Q = plt.axes([0.075, 0.35, 0.525, 0.05], facecolor=widget_color)
-slide_Q = utils.MinMaxSlider(ax_Q, 'water discharge (m$^3$/s)', Qmin, Qbf, 
-    valinit=Qinit, valstep=5, transform=ax.transAxes)
+# widget_color = 'lightgoldenrodyellow'
+# ax_Q = plt.axes([0.075, 0.35, 0.525, 0.05], facecolor=widget_color)
+# slide_Q = utils.MinMaxSlider(ax_Q, 'water discharge (m$^3$/s)', Qmin, Qbf, 
+#     valinit=Qinit, valstep=5, transform=ax.transAxes)
 
 
 # 
@@ -149,33 +153,33 @@ slide_Q = utils.MinMaxSlider(ax_Q, 'water discharge (m$^3$/s)', Qmin, Qbf,
 
 
 # add gui buttons
-chk_data_ax = plt.axes([0.75, 0.25, 0.15, 0.15], facecolor=background_color)
-chk_data_dict = {'overbank flow':'ob'}
-chk_data = widget.CheckButtons(chk_data_ax, chk_data_dict, [False])
+# chk_data_ax = plt.axes([0.75, 0.25, 0.15, 0.15], facecolor=background_color)
+# chk_data_dict = {'overbank flow':'ob'}
+# chk_data = widget.CheckButtons(chk_data_ax, chk_data_dict, [False])
 
-btn_reset_ax = plt.axes([0.75, 0.1, 0.1, 0.04])
-btn_reset = widget.Button(btn_reset_ax, 'Reset', color=widget_color, hovercolor='0.975')
+# btn_reset_ax = plt.axes([0.75, 0.1, 0.1, 0.04])
+# btn_reset = widget.Button(btn_reset_ax, 'Reset', color=widget_color, hovercolor='0.975')
 
 
-def reset(event):
-    slide_Q.reset()
-    chk_data_status = chk_data.get_status()
-    for cb in [i for i, x in enumerate(chk_data_status) if x]:
-        chk_data.set_active(cb)
-    fig.canvas.draw_idle()
+# def reset(event):
+#     slide_Q.reset()
+#     chk_data_status = chk_data.get_status()
+#     for cb in [i for i, x in enumerate(chk_data_status) if x]:
+#         chk_data.set_active(cb)
+#     fig.canvas.draw_idle()
 
-def slider_update(label):
-    chk_val = chk_data_dict[label]
-    if chk_val == 'ob':
-        if slide_Q.valmax == Qbf:
-            slide_Q.set_slidermax(Qbf*2)
-        else:
-            slide_Q.set_slidermax(Qbf)
-    fig.canvas.draw_idle()
+# def slider_update(label):
+#     chk_val = chk_data_dict[label]
+#     if chk_val == 'ob':
+#         if slide_Q.valmax == Qbf:
+#             slide_Q.set_slidermax(Qbf*2)
+#         else:
+#             slide_Q.set_slidermax(Qbf)
+#     fig.canvas.draw_idle()
 
 # connect widgets
-slide_Q.on_changed(update)
-chk_data.on_clicked(slider_update)
+# slide_Q.on_changed(update)
+# chk_data.on_clicked(slider_update)
 # btn_reset.on_clicked(reset)
 
 
